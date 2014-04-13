@@ -25,18 +25,18 @@ class TransactionController {
 		checkSession();
 		def ledger = ledgerService.retrieve(session["Ledger"]);
 		
-	    if (params.description && params.occurredOn && params.cents && params.currency && params.debitor && params.creditor) {
+	    if (params.narration && params.occurredOn && params.cents && params.currency && params.debitor && params.creditor) {
 			def amount = new Amount(Integer.parseInt(params.cents),Amount.Currency.valueOf(params.currency));
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 			Date dateStr = formatter.parse(params.occurredOn);
         
-			Account debitor = accountService.retrieveAccount(ledger,params.debitor);
-			Account creditor = accountService.retrieveAccount(ledger,params.creditor);
-			ledger.ledger(params.description, dateStr, amount , debitor, creditor);
+			Account debitor = accountService.retrieve(ledger,params.debitor);
+			Account creditor = accountService.retrieve(ledger,params.creditor);
+			transactionService.create(ledger,params.narration, dateStr, amount , debitor, creditor);
 			
 			redirect(action: "index");
 		}
-		[currencies: Amount.Currency.values(),accounts: accountService.listAccounts(ledger)]
+		[currencies: Amount.Currency.values(),accounts: accountService.list(ledger)]
 	}
 
 	private def checkSession() {

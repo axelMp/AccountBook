@@ -2,20 +2,20 @@
 <html>
 	<body>
 	<form name="input" action="create" method="get">
-		description: <input type="text" name="description"></br>
-		occurredOn : <input type="text" name="occurredOn"></br>
+		narration: <input type="text" name="narration"></br>
+		occurredOn : <input type="text" name="occurredOn"> (dd-MM-yyyy)</br>
 		amount: <input type="text" name="cents"> <select name="currency" size="1">
 		<% currencies.each { currency -> %>
         <option><%="${currency.toString()}" %></option>
 	  <%}%>
 		</select> </br> 
-		from: <select name="from" size="1">
+		debitor: <select name="debitor" size="1">
 		  <% accounts.each { account -> %>
            <option><%="${account.name}" %></option>
 	      <%}%>
 		</select> </br> 
 		
-		to: <select name="to" size="1">
+		creditor: <select name="creditor" size="1">
 		  <% accounts.each { account -> %>
            <option><%="${account.name}" %></option>
 	      <%}%>

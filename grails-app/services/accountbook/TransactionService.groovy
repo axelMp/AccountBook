@@ -10,21 +10,14 @@ import org.book.account.domain.Transaction;
 @Transactional
 class TransactionService {
     
-    def create(Ledger book,String text,Date occurredOn,Integer cents,String currency,Account from, Account to) {
-	    if ( ! transactions.containsKey(book)) {
-			transactions.put(book,new LinkedList<Transaction>());
-		}
-		
-		Amount amount = new Amount(cents,Amount.Currency.valueOf(currency));
-		
-		Transaction newTransaction = book.book(text,occurredOn,amount,from,to);
-		transactions.get(book).put(newTransaction);
+    def create(Ledger ledger,String text,Date occurredOn,Amount amount,Account debitor, Account creditor) {
+		Transaction newTransaction = ledger.book(text,occurredOn,amount,debitor,creditor);
+		ledger.save();
+		newTransaction.save(true);
 		return newTransaction;
     }
 	
 	def list(Ledger ledger) {
-		return transactions.get(ledger);
+		ledger.getTransactions();
 	}
-	
-	private final Map<Ledger,List<Transaction>> transactions = new HashMap<Ledger,List<Transaction> >();
 }

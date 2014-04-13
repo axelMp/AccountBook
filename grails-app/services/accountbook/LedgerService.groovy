@@ -18,6 +18,11 @@ class LedgerService {
     }
 	
 	def retrieve(String name) {
-		return Ledger.findByName(name);
+		for ( Ledger aLedger:Ledger.list() ) {
+			if ( aLedger.getName().equals(name)) {
+				return aLedger;
+			}
+		}
+		throw new IllegalArgumentException("Unknown ledger with name "+name);
 	}
 }
