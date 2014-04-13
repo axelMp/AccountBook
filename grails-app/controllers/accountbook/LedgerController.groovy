@@ -6,13 +6,13 @@ import static org.springframework.http.HttpMethod.*
 
 import org.book.account.domain.Ledger
 
-@Transactional(readOnly = true)
+@Transactional
 class LedgerController {
 	def ledgerService;
 	
     def index() { 
 	    if ( null == session["Ledger"] ) {
-			def ledgers = ledgerService.list();
+			def ledgers = Ledger.list();
 			if ( ledgers.isEmpty() ) {
 				redirect(action:"create");
 			}
@@ -27,11 +27,6 @@ class LedgerController {
 			ledgerService.create(params.name);
 			redirect(action: "index");
 		}
-	}
-	
-	def delete(Ledger anLedger) {
-		ledgerService.delete(anLedger);
-		redirect(action: "index");
 	}
 	
 	def select() {

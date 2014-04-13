@@ -9,7 +9,8 @@
         <mapping class="org.book.account.domain.Account"/>
         <mapping class="org.book.account.domain.Ledger"/>
         <mapping class="org.book.account.domain.Amount"/>
-        <mapping class="org.book.account.domain.ExecutedTransaction"/>
+        <mapping class="org.book.account.domain.Budget"/>
+        <mapping class="org.book.account.domain.Transaction"/>
         <mapping class="org.book.account.domain.PlannedTransaction"/>
 	</session-factory>
 

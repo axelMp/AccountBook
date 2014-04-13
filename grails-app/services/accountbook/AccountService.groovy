@@ -10,23 +10,22 @@ class AccountService {
 
 	def create(Ledger ledger, String name,String typeOfAccount) {
 		Account.AccountType accountType = Account.AccountType.valueOf(typeOfAccount);
-		accounts.put(name,ledger.generateAccount(name, accountType));
-		return retrieveAccount(ledger,name);
+		def account = ledger.createAccount(name, accountType);
+		ledger.save();
+		account.save(true);
+		return account;
     }
 	
 	def retrieve(Ledger ledger,String name) {
-		return accounts.get(name);
-	}
-	
-	def delete(Ledger aSystem,Account account) {
-		aSystem.remove(account);
-		accounts.remove(account);
+		for (Account account: ledger.getAccounts()) {
+			if(account.getName().equals(name)) {
+				return account;
+			}
+		}
+		throw new IllegalArgumentException("no account with name "+name+" configured for ledger \""+ledger.getName()+"\"");
 	}
 	
 	def list(Ledger ledger) {
-		return accounts.values();
+		return ledger.getAccounts();
 	}
-	
-	
-	private final Map<String,Account> accounts = new HashMap<String,Account>();
 }

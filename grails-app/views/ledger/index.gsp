@@ -2,10 +2,10 @@
 <html>
 	<body>
 	<table>
-	<tr><th>Select book</th></tr>
+	<tr><th>Select ledger</th></tr>
 		
-	  <% books.each { book -> %>
-        <tr><td><a href="/book/select?name=${book.name}"><%="${book.name}" %></a> <form name="input" action="delete" method="get"><input type="submit" value="Delete"></form></td></tr>
+	  <% ledgers.each { ledger -> %>
+        <tr><td><a href="select?name=${ledger.name}"><%="${ledger.name}" %></a> <form name="input" action="delete" method="get"><input type="submit" value="Delete"></form></td></tr>
 	  <%}%>
 	  
 	</table>

@@ -1,6 +1,6 @@
 package accountbook
 
-import org.book.account.domain.AccountSystem;
+import org.book.account.domain.Ledger;
 
 import grails.transaction.Transactional
 
@@ -8,24 +8,16 @@ import grails.transaction.Transactional
 class LedgerService {
 
     def create(String name) {
-	    if ( currentLedgers.containsKey(name)) {
-			throw new IllegalArgumentException("Ledger with name "+name+" already exist");
+		def queryResult = Ledger.findByName(name);
+	    if ( null != queryResult && !queryResult.isEmpty()) {
+			throw new IllegalArgumentException("Ledger with name "+name+" already exists");
 		}
-		currentLedgers.put(name,new AccountSystem(name));
-		return retrieve(name);
+		Ledger aLedger = new Ledger(name);
+		aLedger.save(true);
+		return aLedger;
     }
 	
 	def retrieve(String name) {
-		return currentLedgers.get(name);
+		return Ledger.findByName(name);
 	}
-	
-	def delete(AccountSystem aSystem) {
-		// nothing to do until hibernate
-	}
-	
-	def list() {
-		return currentLedgers.values();
-	}
-	
-	private final Map<String,AccountSystem> currentLedgers = new HashMap<String,AccountSystem>();
 }
