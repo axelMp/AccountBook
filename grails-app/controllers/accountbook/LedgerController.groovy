@@ -4,19 +4,19 @@ import grails.transaction.*
 import static org.springframework.http.HttpStatus.*
 import static org.springframework.http.HttpMethod.*
 
-import org.book.account.domain.AccountSystem
+import org.book.account.domain.Ledger
 
 @Transactional(readOnly = true)
-class BookController {
-	def bookService;
+class LedgerController {
+	def ledgerService;
 	
     def index() { 
-	    if ( null == session["accountSystem"] ) {
-			def books = bookService.list();
-			if ( books.isEmpty() ) {
+	    if ( null == session["Ledger"] ) {
+			def ledgers = ledgerService.list();
+			if ( ledgers.isEmpty() ) {
 				redirect(action:"create");
 			}
-			respond books, model:[books: books];
+			respond ledgers, model:[ledgers: ledgers];
 		} else {
 			redirect(url: "/account");
 		}
@@ -24,19 +24,19 @@ class BookController {
 	
 	def create() {
 	    if (params.name) {
-			bookService.create(params.name);
+			ledgerService.create(params.name);
 			redirect(action: "index");
 		}
 	}
 	
-	def delete(AccountSystem anAccountSystem) {
-		bookService.delete(anAccountSystem);
+	def delete(Ledger anLedger) {
+		ledgerService.delete(anLedger);
 		redirect(action: "index");
 	}
 	
 	def select() {
 		if (params.name) {
-			session["accountSystem"]=params.name;
+			session["Ledger"]=params.name;
 		}
 		
 		redirect(action: "index");

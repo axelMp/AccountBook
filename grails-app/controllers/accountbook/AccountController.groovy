@@ -1,42 +1,41 @@
 package accountbook
 
-import org.book.account.domain.AccountSystem
+import org.book.account.domain.Ledger
 import org.book.account.domain.Account
-import org.book.account.domain.PhysicalAccount
 
 class AccountController {
 	def accountService
-	def bookService
+	def ledgerService
 	
     def index() {
 		checkSession();
-		def book = bookService.retrieve(session["accountSystem"]);
+		def ledger = ledgerService.retrieve(session["Ledger"]);
 		
-		def accounts = accountService.listAccounts(book);
+		def accounts = accountService.listAccounts(ledger);
 		respond accounts, model:[accounts: accounts];
 	}
 	
 	def create() {
 		checkSession();
-		def book = bookService.retrieve(session["accountSystem"]);
+		def ledger = ledgerService.retrieve(session["Ledger"]);
 		
 	    if (params.name && params.type) {
-			accountService.createAccount(book,params.name,params.type);
+			accountService.createAccount(ledger,params.name,params.type);
 			redirect(action: "index");
 		}
 	}
 	
 	def delete(Account anAccount) {
 		checkSession();
-		def book = bookService.retrieve(session["accountSystem"]);
+		def ledger = bookService.retrieve(session["Ledger"]);
 		
-		accountService.delete(book,anAccount);
+		accountService.delete(ledger,anAccount);
 		redirect(action: "index");
 	}
 	
 	private def checkSession() {
-		if ( null == session["accountSystem"] ) {
-			redirect(url: "/book");
+		if ( null == session["Ledger"] ) {
+			redirect(url: "/ledger");
 		}
 	}
 }

@@ -3,51 +3,30 @@ package accountbook
 import grails.transaction.Transactional
 
 import org.book.account.domain.Account;
-import org.book.account.domain.PhysicalAccount;
-import org.book.account.domain.AccountSystem;
+import org.book.account.domain.Ledger;
 
 @Transactional
 class AccountService {
 
-	def createAccount(AccountSystem book, String name,String typeOfAccount) {
+	def create(Ledger ledger, String name,String typeOfAccount) {
 		Account.AccountType accountType = Account.AccountType.valueOf(typeOfAccount);
-		accounts.put(name,book.generateAccount(name, accountType));
-		return retrieveAccount(book,name);
+		accounts.put(name,ledger.generateAccount(name, accountType));
+		return retrieveAccount(ledger,name);
     }
 	
-	def createPhysicalAccount(AccountSystem book, String name) {
-		physicalAccounts.put(name,book.generatePhysicalAccount(name));
-		return retrievePhysicalAccount(book,name);    
-	}
-	
-	
-	def retrieveAccount(AccountSystem book,String name) {
+	def retrieve(Ledger ledger,String name) {
 		return accounts.get(name);
 	}
 	
-	def retrievePhysicalAccount(AccountSystem book,String name) {
-		return physicalAccounts.get(name);
-	}
-	
-	
-	def delete(AccountSystem aSystem,Account account) {
+	def delete(Ledger aSystem,Account account) {
 		aSystem.remove(account);
 		accounts.remove(account);
 	}
 	
-	def delete(AccountSystem aSystem,PhysicalAccount account) {
-		aSystem.remove(account);
-		physicalAccounts.remove(account);
-	}
-	
-	def listAccounts(AccountSystem book) {
+	def list(Ledger ledger) {
 		return accounts.values();
 	}
 	
-	def listPhysicalAccounts(AccountSystem book) {
-		return physicalAccounts.values();
-	}
 	
 	private final Map<String,Account> accounts = new HashMap<String,Account>();
-	private final Map<String,PhysicalAccount> physicalAccounts = new HashMap<String,PhysicalAccount>();
 }

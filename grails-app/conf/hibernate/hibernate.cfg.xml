@@ -7,8 +7,7 @@
 
 	<session-factory>
         <mapping class="org.book.account.domain.Account"/>
-        <mapping class="org.book.account.domain.AccountHierarchy"/>
-        <mapping class="org.book.account.domain.AccountSystem"/>
+        <mapping class="org.book.account.domain.Ledger"/>
         <mapping class="org.book.account.domain.Amount"/>
         <mapping class="org.book.account.domain.ExecutedTransaction"/>
         <mapping class="org.book.account.domain.PlannedTransaction"/>
