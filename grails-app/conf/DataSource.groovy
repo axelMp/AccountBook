@@ -2,7 +2,7 @@ dataSource {
 
     pooled = true
     jmxExport = true
-    dbCreate = "update"
+    dbCreate = "create-drop"
     url = "jdbc:postgresql://localhost:5432/accountbook"
     driverClassName = "org.postgresql.Driver"
     dialect = "org.hibernate.dialect.PostgreSQLDialect"
