@@ -1,11 +1,12 @@
 package accountbook
 
-import org.book.account.domain.Ledger;
+import org.book.account.domain.*;
 
 import grails.transaction.Transactional
 
 @Transactional
 class LedgerService {
+	def budgetService;
 
     def create(String name) {
 		def queryResult = Ledger.findByName(name);
@@ -14,6 +15,7 @@ class LedgerService {
 		}
 		Ledger aLedger = new Ledger(name);
 		aLedger.save(true);
+		budgetService.create(aLedger);
 		return aLedger;
     }
 	

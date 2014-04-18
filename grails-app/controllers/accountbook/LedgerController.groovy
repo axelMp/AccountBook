@@ -9,6 +9,7 @@ import org.book.account.domain.Ledger
 @Transactional
 class LedgerController {
 	def ledgerService;
+	def budgetService;
 	
     def index() { 
 	    if ( null == session["Ledger"] ) {
@@ -24,7 +25,7 @@ class LedgerController {
 	
 	def create() {
 	    if (params.name) {
-			ledgerService.create(params.name);
+			def aLedger = ledgerService.create(params.name);
 			redirect(action: "index");
 		}
 	}

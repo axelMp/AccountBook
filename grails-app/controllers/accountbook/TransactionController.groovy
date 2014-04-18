@@ -3,9 +3,7 @@ package accountbook
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.book.account.domain.Ledger
-import org.book.account.domain.Account
-import org.book.account.domain.Amount
+import org.book.account.domain.*
 
 class TransactionController {
 	def ledgerService
