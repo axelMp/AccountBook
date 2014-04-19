@@ -28,21 +28,21 @@ class BudgetController {
 		def ledger = ledgerService.retrieve(session["Ledger"]);
 		def budget = budgetService.retrieve(ledger);
 	
-	    if (params.narration && params.startsOn && params.endsOn && params.cents && params.currency && params.debitor && params.creditor && params.isContinuous) {
+	    if (params.narration && params.startsOn && params.endsOn && params.cents && params.currency && params.debitor && params.creditor && params.execution) {
 			def amount = new Amount(Integer.parseInt(params.cents),Amount.Currency.valueOf(params.currency));
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 			Date startsOn = formatter.parse(params.startsOn);
 			Date endsOn = formatter.parse(params.endsOn);
-			boolean isContinuous = "true".equals(params.isContinuous);
+			PlannedTransaction.Execution execution = PlannedTransaction.Execution.valueOf(params.execution);
 			
 			Account debitor = accountService.retrieve(ledger,params.debitor);
 			Account creditor = accountService.retrieve(ledger,params.creditor);
-			def plannedTransaction = budget.plan(params.narration, startsOn, endsOn, amount, debitor, creditor, isContinuous);
+			def plannedTransaction = budget.plan(params.narration, startsOn, endsOn, amount, debitor, creditor, execution);
 			plannedTransaction.save();
 			budget.save(true);
 			redirect(action: "index");
 		}
-		[currencies: Amount.Currency.values(),accounts: accountService.list(ledger)]
+		[currencies: Amount.Currency.values(),accounts: accountService.list(ledger),executions:PlannedTransaction.Execution.values()]
 	}
 	
 	

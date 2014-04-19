@@ -5,10 +5,11 @@
 		narration: <input type="text" name="narration"></br>
 		startsOn : <input type="text" name="startsOn"> (dd-MM-yyyy)</br>
 		endsOn : <input type="text" name="endsOn"> (dd-MM-yyyy)</br>
-		isContinuous: <select name="isContinuous" size="1">
-			<option>true</option>
-			<option>false</option>
-		</select></br>
+		execution: <select name="execution" size="1">
+		  <% executions.each { execution -> %>
+           <option><%="${execution.toString()}" %></option>
+	      <%}%>
+		</select> </br> 
 		amount: <input type="text" name="cents"> 
 		<select name="currency" size="1">
 		<% currencies.each { currency -> %>
