@@ -2,8 +2,7 @@ package accountbook
 
 import grails.transaction.Transactional
 
-import org.book.account.domain.Account;
-import org.book.account.domain.Ledger;
+import org.book.account.domain.*;
 
 @Transactional
 class AccountService {
