@@ -1,39 +1,64 @@
 package accountbook
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.codehaus.groovy.grails.web.json.*;
 import org.book.account.domain.*
 
 class TransactionController {
 	def ledgerService
 	def accountService
 	def transactionService
+	def utilitiesService
 	
     def index() {
 		checkSession();
 		def ledger = ledgerService.retrieve(session["Ledger"]);
 		
 		def transactions = ledger.getTransactions();
-		respond transactions, model:[transactions: transactions];
+		
+		
+		withFormat {
+			html {
+				respond transactions, model:[transactions: transactions];
+			}
+			json {
+				render(contentType: "text/json") {
+					array {
+						for(t in transactions){
+							transaction narration: t.narration, creditor:t.creditor.name, debitor:t.debitor.name, occurredOn:utilitiesService.encodeDate(t.occurredOn), cents:t.amount.cents,currency:t.amount.currency.toString()
+						}
+					}
+				}
+			}
+		}
 	}
-	
+
 	def create() {
 		checkSession();
 		def ledger = ledgerService.retrieve(session["Ledger"]);
-		
-	    if (params.narration && params.occurredOn && params.cents && params.currency && params.debitor && params.creditor) {
-			def amount = new Amount(Integer.parseInt(params.cents),Amount.Currency.valueOf(params.currency));
-			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-			Date dateStr = formatter.parse(params.occurredOn);
-        
-			IAccount debitor = accountService.retrieve(ledger,params.debitor);
-			IAccount creditor = accountService.retrieve(ledger,params.creditor);
-			transactionService.create(ledger,params.narration, dateStr, amount , debitor, creditor);
+			
+	    if ( request.format == "json" ) {
+			for ( int nrElement = 0 ; nrElement < request.JSON.size() ; ++nrElement ) {
+				JSONObject model = request.JSON.getJSONObject(nrElement);
+				createTransaction(ledger, model.getString("narration"),model.getString("occurredOn"),model.getInt("cents"),model.getString("currency"),model.getString("debitor"),model.getString("creditor"));
+			}
+			redirect(action: "index");
+		} else if (params.narration && params.occurredOn && params.cents && params.currency && params.debitor && params.creditor) {
+			createTransaction(ledger,params.narration, params.occurredOn, Integer.parseInt(params.cents), params.currency, params.debitor, params.creditor);
 			
 			redirect(action: "index");
 		}
 		[currencies: Amount.Currency.values(),accounts: accountService.list(ledger)]
+	}
+	
+	private void createTransaction(ILedger ledger, String narration,String occurredOn,Integer cents,String currency,String debitorName,String creditorName) {
+		def amount = new Amount(cents,Amount.Currency.valueOf(currency));
+		Date dateStr = utilitiesService.parseDate(occurredOn);
+	
+		IAccount debitor = accountService.retrieve(ledger,debitorName);
+		IAccount creditor = accountService.retrieve(ledger,creditorName);
+		transactionService.create(ledger,narration, dateStr, amount , debitor, creditor);
 	}
 
 	private def checkSession() {

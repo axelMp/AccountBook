@@ -11,14 +11,27 @@ class LedgerController {
 	def ledgerService;
 	
     def index() { 
+		def ledgers = ledgerService.list();
 	    if ( null == session["Ledger"] ) {
-			def ledgers = ledgerService.list();
 			if ( ledgers.isEmpty() ) {
 				redirect(action:"create");
 			}
 			respond ledgers, model:[ledgers: ledgers];
 		} else {
-			redirect(url: "/account");
+			withFormat {
+				html {
+					redirect(url: "/account");
+				}
+				json {
+					render(contentType: "text/json") {
+						array {
+							for(l in ledgers){
+								ledger name: l.name
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 	
