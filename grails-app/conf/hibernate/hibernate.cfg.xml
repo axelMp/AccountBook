@@ -5,14 +5,15 @@
 
 <hibernate-configuration>
 
-	<session-factory>
-        <mapping class="org.book.account.domain.Account"/>
-        <mapping class="org.book.account.domain.Ledger"/>
+	<session-factory>        
+		<mapping class="org.book.account.core.Account"/>
+        <mapping class="org.book.account.core.Ledger"/>
         <mapping class="org.book.account.domain.Amount"/>
-        <mapping class="org.book.account.domain.Budget"/>
-        <mapping class="org.book.account.domain.Transaction"/>
-        <mapping class="org.book.account.domain.PlannedTransaction"/>
-        <mapping class="org.book.account.domain.AccountClosureThresholdPerformanceIndicator"/>
+        <mapping class="org.book.account.core.Budget"/>
+        <mapping class="org.book.account.core.Transaction"/>
+        <mapping class="org.book.account.core.PlannedTransaction"/>
+        <mapping class="org.book.account.core.AccountClosureThresholdPerformanceIndicator"/>
+
 	</session-factory>
 
 </hibernate-configuration>

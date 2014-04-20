@@ -30,7 +30,7 @@ class IndicatorController {
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 			Date validUntil = formatter.parse(params.validUntil);
 			boolean reachThresholdEveryDay = "true".equals(params.reachThresholdEveryDay);
-			Account account = accountService.retrieve(ledger,params.account);
+			IAccount account = accountService.retrieve(ledger,params.account);
 			def indicator = indicatorService.create(ledger,params.name,account,threshold,validUntil,reachThresholdEveryDay);
 			redirect(action: "index");
 		}

@@ -1,21 +1,23 @@
 package accountbook
 
-import org.book.account.domain.*;
-
 import grails.transaction.Transactional
 
-@Transactional
-class LedgerService {
-	def budgetService;
+import org.book.account.domain.*;
+import org.book.account.core.Ledger;
+import org.book.account.core.Factory;
 
+@Transactional
+class LedgerService {;
+	IFactory domainFactory = new Factory();
+	
     def create(String name) {
+		
 		def queryResult = Ledger.findByName(name);
 	    if ( null != queryResult && !queryResult.isEmpty()) {
 			throw new IllegalArgumentException("Ledger with name "+name+" already exists");
 		}
-		Ledger aLedger = new Ledger(name);
+		Ledger aLedger = domainFactory.createLedger(name);
 		aLedger.save(true);
-		budgetService.create(aLedger);
 		return aLedger;
     }
 	
@@ -26,5 +28,9 @@ class LedgerService {
 			}
 		}
 		throw new IllegalArgumentException("Unknown ledger with name "+name);
+	}
+	
+	def list() {
+		return Ledger.list();
 	}
 }

@@ -2,22 +2,14 @@ package accountbook
 
 import grails.transaction.Transactional
 
-import org.book.account.domain.Ledger;
-import org.book.account.domain.Account;
-import org.book.account.domain.Amount;
-import org.book.account.domain.Transaction;
+import org.book.account.domain.*;
 
 @Transactional
 class TransactionService {
     
-    def create(Ledger ledger,String text,Date occurredOn,Amount amount,Account debitor, Account creditor) {
-		Transaction newTransaction = ledger.book(text,occurredOn,amount,debitor,creditor);
-		ledger.save();
-		newTransaction.save(true);
+    def create(ILedger ledger,String text,Date occurredOn,Amount amount,IAccount debitor, IAccount creditor) {
+		ITransaction newTransaction = ledger.book(text,occurredOn,amount,debitor,creditor);
+		ledger.save(true);
 		return newTransaction;
     }
-	
-	def list(Ledger ledger) {
-		ledger.getTransactions();
-	}
 }

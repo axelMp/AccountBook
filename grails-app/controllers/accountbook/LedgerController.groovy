@@ -4,16 +4,15 @@ import grails.transaction.*
 import static org.springframework.http.HttpStatus.*
 import static org.springframework.http.HttpMethod.*
 
-import org.book.account.domain.Ledger
+import org.book.account.domain.*
 
 @Transactional
 class LedgerController {
 	def ledgerService;
-	def budgetService;
 	
     def index() { 
 	    if ( null == session["Ledger"] ) {
-			def ledgers = Ledger.list();
+			def ledgers = ledgerService.list();
 			if ( ledgers.isEmpty() ) {
 				redirect(action:"create");
 			}
@@ -25,7 +24,7 @@ class LedgerController {
 	
 	def create() {
 	    if (params.name) {
-			def aLedger = ledgerService.create(params.name);
+			ledgerService.create(params.name);
 			redirect(action: "index");
 		}
 	}

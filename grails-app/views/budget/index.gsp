@@ -9,7 +9,7 @@
 			<td><%="${transaction.amount.cents}" %></td>
 			<td><%="${transaction.startsOn.toString()}" %></td>
 			<td><%="${transaction.endsOn.toString()}" %></td>
-			<td><%="${transaction.execution.toString()}" %></td>
+			<td><%="${transaction.executionOfPlannedTransaction.toString()}" %></td>
 			<td><%="${transaction.debitor.name}" %></td>
 			<td><%="${transaction.creditor.name}" %></td>
 			</tr>

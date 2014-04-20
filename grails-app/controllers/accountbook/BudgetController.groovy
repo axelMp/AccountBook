@@ -10,13 +10,12 @@ import org.book.account.domain.*
 
 class BudgetController {
 	def ledgerService;
-	def budgetService;
 	def accountService;
 	
     def index() {
 		checkSession();
 		def ledger = ledgerService.retrieve(session["Ledger"]);
-		def budget = budgetService.retrieve(ledger);
+		def budget = ledger.getBudget();
 		
 		def plan = budget.getPlannedTransactions();
 		respond plan, model:[plan: plan];
@@ -26,23 +25,22 @@ class BudgetController {
 	def create() {
 		checkSession();
 		def ledger = ledgerService.retrieve(session["Ledger"]);
-		def budget = budgetService.retrieve(ledger);
+		def budget = ledger.getBudget();
 	
 	    if (params.narration && params.startsOn && params.endsOn && params.cents && params.currency && params.debitor && params.creditor && params.execution) {
 			def amount = new Amount(Integer.parseInt(params.cents),Amount.Currency.valueOf(params.currency));
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 			Date startsOn = formatter.parse(params.startsOn);
 			Date endsOn = formatter.parse(params.endsOn);
-			PlannedTransaction.Execution execution = PlannedTransaction.Execution.valueOf(params.execution);
+			ExecutionOfPlannedTransaction execution = ExecutionOfPlannedTransaction.valueOf(params.execution);
 			
-			Account debitor = accountService.retrieve(ledger,params.debitor);
-			Account creditor = accountService.retrieve(ledger,params.creditor);
+			IAccount debitor = accountService.retrieve(ledger,params.debitor);
+			IAccount creditor = accountService.retrieve(ledger,params.creditor);
 			def plannedTransaction = budget.plan(params.narration, startsOn, endsOn, amount, debitor, creditor, execution);
-			plannedTransaction.save();
-			budget.save(true);
+			ledger.save(true);
 			redirect(action: "index");
 		}
-		[currencies: Amount.Currency.values(),accounts: accountService.list(ledger),executions:PlannedTransaction.Execution.values()]
+		[currencies: Amount.Currency.values(),accounts: accountService.list(ledger),executions:ExecutionOfPlannedTransaction.values()]
 	}
 	
 	

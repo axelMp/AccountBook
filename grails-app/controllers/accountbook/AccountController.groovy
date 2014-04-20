@@ -1,7 +1,6 @@
 package accountbook
 
-import org.book.account.domain.Ledger
-import org.book.account.domain.Account
+import org.book.account.domain.*
 
 class AccountController {
 	def accountService
@@ -11,7 +10,7 @@ class AccountController {
 		checkSession();
 		def ledger = ledgerService.retrieve(session["Ledger"]);
 		
-		def accounts = accountService.list(ledger);
+		def accounts = ledger.getAccounts();
 		respond accounts, model:[accounts: accounts];
 	}
 	

@@ -14,10 +14,9 @@ class TransactionController {
 		checkSession();
 		def ledger = ledgerService.retrieve(session["Ledger"]);
 		
-		def transactions = transactionService.list(ledger);
+		def transactions = ledger.getTransactions();
 		respond transactions, model:[transactions: transactions];
 	}
-	
 	
 	def create() {
 		checkSession();
@@ -28,8 +27,8 @@ class TransactionController {
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 			Date dateStr = formatter.parse(params.occurredOn);
         
-			Account debitor = accountService.retrieve(ledger,params.debitor);
-			Account creditor = accountService.retrieve(ledger,params.creditor);
+			IAccount debitor = accountService.retrieve(ledger,params.debitor);
+			IAccount creditor = accountService.retrieve(ledger,params.creditor);
 			transactionService.create(ledger,params.narration, dateStr, amount , debitor, creditor);
 			
 			redirect(action: "index");

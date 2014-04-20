@@ -50,8 +50,8 @@ grails.project.dependency.resolution = {
 
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes
-		compile 'DomainAccount:DomainAccount:0.0.10' 
-		runtime 'DomainAccount:DomainAccount:0.0.10'
+		compile 'DomainAccount:DomainAccount:0.0.11' 
+		runtime 'DomainAccount:DomainAccount:0.0.11'
 		
 		compile 'postgresql:postgresql:9.1-901.jdbc4'
         runtime 'postgresql:postgresql:9.1-901.jdbc4'

@@ -4,19 +4,17 @@ import grails.transaction.Transactional
 
 import org.book.account.domain.*;
 
-@Transactional
 class AccountService {
 
-	def create(Ledger ledger, String name,String typeOfAccount) {
-		Account.AccountType accountType = Account.AccountType.valueOf(typeOfAccount);
+	def create(ILedger ledger, String name,String typeOfAccount) {
+		AccountType accountType = AccountType.valueOf(typeOfAccount);
 		def account = ledger.createAccount(name, accountType);
-		ledger.save();
-		account.save(true);
+		ledger.save(true);
 		return account;
     }
 	
-	def retrieve(Ledger ledger,String name) {
-		for (Account account: ledger.getAccounts()) {
+	def retrieve(ILedger ledger,String name) {
+		for (IAccount account: ledger.getAccounts()) {
 			if(account.getName().equals(name)) {
 				return account;
 			}
@@ -24,7 +22,7 @@ class AccountService {
 		throw new IllegalArgumentException("no account with name "+name+" configured for ledger \""+ledger.getName()+"\"");
 	}
 	
-	def list(Ledger ledger) {
+	def list(ILedger ledger) {
 		return ledger.getAccounts();
 	}
 }
