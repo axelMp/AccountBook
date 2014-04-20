@@ -8,7 +8,6 @@ class AccountController {
 	def ledgerService
 	
     def index() {
-		checkSession();
 		def ledger = ledgerService.retrieve(session["Ledger"]);
 		
 		def accounts = ledger.getAccounts();
@@ -29,7 +28,6 @@ class AccountController {
 	}
 	
 	def create() {
-		checkSession();
 		def ledger = ledgerService.retrieve(session["Ledger"]);
 		
 		if ( request.format == "json" ) {
@@ -46,11 +44,5 @@ class AccountController {
 	
 	private void createAccount(ILedger ledger, String name,String accountType) {
 		accountService.create(ledger,name,accountType);
-	}
-	
-	private def checkSession() {
-		if ( null == session["Ledger"] ) {
-			redirect(url: "/ledger");
-		}
 	}
 }

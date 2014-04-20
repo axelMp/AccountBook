@@ -15,7 +15,6 @@ class BudgetController {
 	def utilitiesService;
 	
     def index() {
-		checkSession();
 		def ledger = ledgerService.retrieve(session["Ledger"]);
 		
 		def plan = ledger.getBudget().getPlannedTransactions();
@@ -37,7 +36,6 @@ class BudgetController {
 	}
 	
 	def create() {
-		checkSession();
 		def ledger = ledgerService.retrieve(session["Ledger"]);
 		
 		if ( request.format == "json" ) {
@@ -62,11 +60,5 @@ class BudgetController {
 		IAccount debitor = accountService.retrieve(ledger,debitorName);
 		IAccount creditor = accountService.retrieve(ledger,creditorName);
 		ledgerService.plan(ledger,narration, startsOn, endsOn, amount, debitor, creditor, execution);
-	}
-	
-	private def checkSession() {
-		if ( null == session["Ledger"] ) {
-			redirect(url: "/ledger");
-		}
 	}
 }

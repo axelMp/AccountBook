@@ -15,14 +15,12 @@ class IndicatorController {
 	def accountService;
 
     def index() {
-		checkSession();
 		def ledger = ledgerService.retrieve(session["Ledger"]);
 		def indicators = indicatorService.list(ledger);
 		respond indicators, model:[indicators: indicators];
 	}
 	
 	def create() {
-		checkSession();
 		def ledger = ledgerService.retrieve(session["Ledger"]);
 		
 	    if (params.name && params.account && params.cents && params.currency && params.validUntil && params.reachThresholdEveryDay) {
@@ -35,12 +33,5 @@ class IndicatorController {
 			redirect(action: "index");
 		}
 		[accounts: accountService.list(ledger),currencies:Amount.Currency.values()]
-	}
-	
-	
-	private def checkSession() {
-		if ( null == session["Ledger"] ) {
-			redirect(url: "/ledger");
-		}
 	}
 }

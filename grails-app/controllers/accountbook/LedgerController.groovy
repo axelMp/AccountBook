@@ -20,7 +20,7 @@ class LedgerController {
 		} else {
 			withFormat {
 				html {
-					redirect(url: "/account");
+					respond ledgers, model:[ledgers: ledgers];
 				}
 				json {
 					render(contentType: "text/json") {
@@ -38,7 +38,7 @@ class LedgerController {
 	def create() {
 	    if (params.name) {
 			ledgerService.create(params.name);
-			redirect(action: "index");
+			redirect(url: "/ledger/",action: "index");
 		}
 	}
 	

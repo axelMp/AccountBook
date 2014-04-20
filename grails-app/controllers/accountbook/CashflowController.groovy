@@ -12,7 +12,6 @@ class CashflowController {
 	}
 	
 	def kiyosaki() {
-		checkSession();
 		def ledger = ledgerService.retrieve(session["Ledger"]);
 		
 		// TODO: that's a CashflowService, which should be part of the domain model 
@@ -48,11 +47,5 @@ class CashflowController {
 		}
 		
 		render(view:"kiyosaki", model:[income: cashflowIncome,expense:cashflowExpense,passiveIncome:passiveIncome.getCents()])
-	}
-	
-	private def checkSession() {
-		if ( null == session["Ledger"] ) {
-			redirect(url: "/ledger/");
-		}
 	}
 }

@@ -12,7 +12,6 @@ class TransactionController {
 	def utilitiesService
 	
     def index() {
-		checkSession();
 		def ledger = ledgerService.retrieve(session["Ledger"]);
 		
 		def transactions = ledger.getTransactions();
@@ -35,7 +34,6 @@ class TransactionController {
 	}
 
 	def create() {
-		checkSession();
 		def ledger = ledgerService.retrieve(session["Ledger"]);
 			
 	    if ( request.format == "json" ) {
@@ -59,11 +57,5 @@ class TransactionController {
 		IAccount debitor = accountService.retrieve(ledger,debitorName);
 		IAccount creditor = accountService.retrieve(ledger,creditorName);
 		transactionService.create(ledger,narration, dateStr, amount , debitor, creditor);
-	}
-
-	private def checkSession() {
-		if ( null == session["Ledger"] ) {
-			redirect(url: "/ledger/");
-		}
 	}
 }
