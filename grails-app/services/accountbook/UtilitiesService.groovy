@@ -10,7 +10,7 @@ class UtilitiesService {
 	private SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 
     def parseDate(String aDate) {
-		return formatter.parse(occurredOn);
+		return formatter.parse(aDate);
     }
 	
 	def encodeDate(Date aDate) {
