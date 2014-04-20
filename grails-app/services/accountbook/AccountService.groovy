@@ -9,7 +9,7 @@ class AccountService {
 	def create(ILedger ledger, String name,String typeOfAccount) {
 		AccountType accountType = AccountType.valueOf(typeOfAccount);
 		def account = ledger.createAccount(name, accountType);
-		ledger.save(true);
+		ledger.save();
 		return account;
     }
 	

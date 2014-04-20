@@ -17,7 +17,7 @@ class LedgerService {;
 			throw new IllegalArgumentException("Ledger with name "+name+" already exists");
 		}
 		Ledger aLedger = domainFactory.createLedger(name);
-		aLedger.save(true);
+		aLedger.save();
 		return aLedger;
     }
 	
@@ -32,5 +32,10 @@ class LedgerService {;
 	
 	def list() {
 		return Ledger.list();
+	}
+	
+	def plan(ILedger ledger, String narration, Date startsOn, Date endsOn, Amount amount, IAccount debitor, IAccount creditor, ExecutionOfPlannedTransaction execution) {
+		ledger.getBudget().plan(narration, startsOn, endsOn, amount, debitor, creditor, execution);
+		ledger.save();
 	}
 }

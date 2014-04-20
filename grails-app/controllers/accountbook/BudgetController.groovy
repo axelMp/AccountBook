@@ -15,9 +15,8 @@ class BudgetController {
     def index() {
 		checkSession();
 		def ledger = ledgerService.retrieve(session["Ledger"]);
-		def budget = ledger.getBudget();
 		
-		def plan = budget.getPlannedTransactions();
+		def plan = ledger.getBudget().getPlannedTransactions();
 		respond plan, model:[plan: plan];
 	}
 	
@@ -25,7 +24,6 @@ class BudgetController {
 	def create() {
 		checkSession();
 		def ledger = ledgerService.retrieve(session["Ledger"]);
-		def budget = ledger.getBudget();
 	
 	    if (params.narration && params.startsOn && params.endsOn && params.cents && params.currency && params.debitor && params.creditor && params.execution) {
 			def amount = new Amount(Integer.parseInt(params.cents),Amount.Currency.valueOf(params.currency));
@@ -36,8 +34,7 @@ class BudgetController {
 			
 			IAccount debitor = accountService.retrieve(ledger,params.debitor);
 			IAccount creditor = accountService.retrieve(ledger,params.creditor);
-			def plannedTransaction = budget.plan(params.narration, startsOn, endsOn, amount, debitor, creditor, execution);
-			ledger.save(true);
+			ledgerService.plan(ledger,params.narration, startsOn, endsOn, amount, debitor, creditor, execution);
 			redirect(action: "index");
 		}
 		[currencies: Amount.Currency.values(),accounts: accountService.list(ledger),executions:ExecutionOfPlannedTransaction.values()]
