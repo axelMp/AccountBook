@@ -16,12 +16,36 @@ class BudgetController {
 	
     def index() {
 		def ledger = ledgerService.retrieve(session["Ledger"]);
+
+		if (params.selected) {
+			def name = utilitiesService.replaceHtmlEncodings(params.selected);
+		
+			def account = accountService.retrieve(ledger,name)
+			
+			withFormat {
+			html {
+				log.info('return planned transactions for account '+name+' as html');
+				render(view:'forSingleAccount', model:[selectedAccount:account,accounts:accountService.list(ledger)]);
+			}
+			json {
+				log.info('return planned transactions for account '+name+' as json');
+				render(contentType: "text/json") {
+					array {
+						for(p in account.getPlannedTransactions()){
+							plannedTransaction narration: p.narration, execution:p.executionOfPlannedTransaction.toString(), creditor:p.creditor.name, debitor:p.debitor.name, startsOn:utilitiesService.encodeDate(p.startsOn), endsOn:utilitiesService.encodeDate(p.endsOn), cents:p.amount.cents,currency:p.amount.currency.toString()
+						}
+					}
+				}
+			}
+		}
+			
+		}
 		
 		def plan = ledger.getBudget().getPlannedTransactions();
 		
 		withFormat {
 			html {
-				respond plan, model:[plan: plan]
+				respond plan, model:[plan: plan,accounts:accountService.list(ledger)]
 			}
 			json {
 				render(contentType: "text/json") {

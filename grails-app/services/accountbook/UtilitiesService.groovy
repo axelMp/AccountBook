@@ -16,4 +16,10 @@ class UtilitiesService {
 	def encodeDate(Date aDate) {
 		return formatter.format(aDate);
 	}
+	
+	def replaceHtmlEncodings(String aString) {
+		log.info("replacing "+aString);
+		log.info("by "+aString.replace("&amp;", "&").replace("&uuml;", "ü").replace("&ouml;", "ö").replace("&auml;", "ä"));
+		return aString.replace("&amp;", "&").replace("&uuml;", "ü").replace("&ouml;", "ö").replace("&auml;", "ä");
+	}
 }

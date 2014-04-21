@@ -35,11 +35,9 @@ class AccountController {
 				JSONObject model = request.JSON.getJSONObject(nrElement);
 				createAccount(ledger, model.getString("name"),model.getString("type"));
 			}
-			
 		} else if (params.name && params.type) {
 			createAccount(ledger,params.name,params.type);
 		}
-		redirect(action: "index");
 	}
 	
 	private void createAccount(ILedger ledger, String name,String accountType) {

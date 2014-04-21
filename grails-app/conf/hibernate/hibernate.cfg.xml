@@ -12,8 +12,6 @@
         <mapping class="org.book.account.core.Budget"/>
         <mapping class="org.book.account.core.Transaction"/>
         <mapping class="org.book.account.core.PlannedTransaction"/>
-        <mapping class="org.book.account.core.AccountClosureThresholdPerformanceIndicator"/>
-
 	</session-factory>
 
 </hibernate-configuration>
