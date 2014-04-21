@@ -8,10 +8,13 @@
 	<session-factory>        
 		<mapping class="org.book.account.core.Account"/>
         <mapping class="org.book.account.core.Ledger"/>
-        <mapping class="org.book.account.domain.Amount"/>
         <mapping class="org.book.account.core.Budget"/>
         <mapping class="org.book.account.core.Transaction"/>
         <mapping class="org.book.account.core.PlannedTransaction"/>
+		
+        <mapping class="org.book.account.domain.Amount"/>
+        <mapping class="org.book.account.domain.Schedule"/>
+        <mapping class="org.book.account.domain.Period"/>
 	</session-factory>
 
 </hibernate-configuration>

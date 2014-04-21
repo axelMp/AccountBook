@@ -32,7 +32,7 @@ class BudgetController {
 				render(contentType: "text/json") {
 					array {
 						for(p in account.getPlannedTransactions()){
-							plannedTransaction narration: p.narration, execution:p.executionOfPlannedTransaction.toString(), creditor:p.creditor.name, debitor:p.debitor.name, startsOn:utilitiesService.encodeDate(p.startsOn), endsOn:utilitiesService.encodeDate(p.endsOn), cents:p.amount.cents,currency:p.amount.currency.toString()
+							plannedTransaction narration: p.narration, executionPolicy:p.schedule.executionPolicy.toString(), creditor:p.creditor.name, debitor:p.debitor.name, startsOn:utilitiesService.encodeDate(p.schedule.period.startsOn), endsOn:utilitiesService.encodeDate(p.schedule.period.endsOn), cents:p.amount.cents,currency:p.amount.currency.toString()
 						}
 					}
 				}
@@ -51,7 +51,7 @@ class BudgetController {
 				render(contentType: "text/json") {
 					array {
 						for(p in plan){
-							plannedTransaction narration: p.narration, execution:p.executionOfPlannedTransaction.toString(), creditor:p.creditor.name, debitor:p.debitor.name, startsOn:utilitiesService.encodeDate(p.startsOn), endsOn:utilitiesService.encodeDate(p.endsOn), cents:p.amount.cents,currency:p.amount.currency.toString()
+							plannedTransaction narration: p.narration, executionPolicy:p.schedule.executionPolicy.toString(), creditor:p.creditor.name, debitor:p.debitor.name, startsOn:utilitiesService.encodeDate(p.schedule.period.startsOn), endsOn:utilitiesService.encodeDate(p.schedule.period.endsOn), cents:p.amount.cents,currency:p.amount.currency.toString()
 						}
 					}
 				}
@@ -65,22 +65,21 @@ class BudgetController {
 		if ( request.format == "json" ) {
 			for ( int nrElement = 0 ; nrElement < request.JSON.size() ; ++nrElement ) {
 				JSONObject model = request.JSON.getJSONObject(nrElement);
-				addToPlan(ledger, model.getString("narration"),model.getString("startsOn"),model.getString("endsOn"),model.getInt("cents"),model.getString("currency"),model.getString("debitor"),model.getString("creditor"),model.getString("execution"));
+				addToPlan(ledger, model.getString("narration"),model.getString("startsOn"),model.getString("endsOn"),model.getInt("cents"),model.getString("currency"),model.getString("debitor"),model.getString("creditor"),model.getString("executionPolicy"));
 			}
 			redirect(action: "index");
-		} else if (params.narration && params.startsOn && params.endsOn && params.cents && params.currency && params.debitor && params.creditor && params.execution) {
-			addToPlan(ledger, params.narration,params.startsOn,params.endsOn,Integer.parseInt(params.cents),params.currency,params.debitor,params.creditor,params.execution);
+		} else if (params.narration && params.startsOn && params.endsOn && params.cents && params.currency && params.debitor && params.creditor && params.executionPolicy) {
+			addToPlan(ledger, params.narration,params.startsOn,params.endsOn,Integer.parseInt(params.cents),params.currency,params.debitor,params.creditor,params.executionPolicy);
 			redirect(action: "index");
 		}
-		[currencies: Amount.Currency.values(),accounts: accountService.list(ledger),executions:ExecutionOfPlannedTransaction.values()]
+		[currencies: Amount.Currency.values(),accounts: accountService.list(ledger),executionPolicies:ExecutionPolicy.values()]
 	}
 	
 	private void addToPlan(ILedger ledger, String narration, String startsOnEncoded, String endsOnEncoded,Integer cents,String currency,String debitorName,String creditorName,String executionType) {
 	    def amount = new Amount(cents,Amount.Currency.valueOf(currency));
 		Date startsOn = utilitiesService.parseDate(startsOnEncoded);
 		Date endsOn = utilitiesService.parseDate(endsOnEncoded);
-		ExecutionOfPlannedTransaction execution = ExecutionOfPlannedTransaction.valueOf(executionType);
-		
+		ExecutionPolicy execution = ExecutionPolicy.valueOf(executionType);
 		IAccount debitor = accountService.retrieve(ledger,debitorName);
 		IAccount creditor = accountService.retrieve(ledger,creditorName);
 		ledgerService.plan(ledger,narration, startsOn, endsOn, amount, debitor, creditor, execution);

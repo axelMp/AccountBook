@@ -15,13 +15,12 @@
 	<body onLoad="onLoad()">
 	<g:render template="accountSelectionTemplate" model="[accounts: accounts,selectedAccount: null]" />
 	<table>
-	<tr><th>Description</th><th>Amount</th><th>From - Until</th><th>Execution</th><th>Debitor</th><th>Creditor</th></tr>
+	<tr><th>Description</th><th>Amount</th><th>Schedule</th><th>Debitor</th><th>Creditor</th></tr>
 		
 	  <% plan.each { transaction -> %>
         <tr><td><%="${transaction.narration}" %></td>
 			<td><g:amountFormat amount="${transaction.amount}"/></td>
-			<td><g:dateFormat date="${transaction.startsOn}"/> - <g:dateFormat date="${transaction.endsOn}"/></td>
-			<td><%="${transaction.executionOfPlannedTransaction.toString()}" %></td>
+			<td><g:scheduleFormat schedule="${transaction.schedule}"/> </td>
 			<td><%="${transaction.debitor.name}" %></td>
 			<td><%="${transaction.creditor.name}" %></td>
 			</tr>

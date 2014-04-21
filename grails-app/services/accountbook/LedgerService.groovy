@@ -34,8 +34,9 @@ class LedgerService {;
 		return Ledger.list();
 	}
 	
-	def plan(ILedger ledger, String narration, Date startsOn, Date endsOn, Amount amount, IAccount debitor, IAccount creditor, ExecutionOfPlannedTransaction execution) {
-		ledger.getBudget().plan(narration, startsOn, endsOn, amount, debitor, creditor, execution);
+	def plan(ILedger ledger, String narration, Date startsOn, Date endsOn, Amount amount, IAccount debitor, IAccount creditor, ExecutionPolicy execution) {
+		Schedule schedule = new Schedule(new Period(startsOn,endsOn),execution);
+		ledger.getBudget().plan(narration, amount, debitor, creditor, schedule);
 		ledger.save();
 	}
 }

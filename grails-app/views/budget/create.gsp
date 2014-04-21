@@ -5,9 +5,9 @@
 		narration: <input type="text" name="narration"></br>
 		startsOn : <input type="text" name="startsOn"> (dd-MM-yyyy)</br>
 		endsOn : <input type="text" name="endsOn"> (dd-MM-yyyy)</br>
-		execution: <select name="execution" size="1">
-		  <% executions.each { execution -> %>
-           <option><%="${execution.toString()}" %></option>
+		executionPolicy: <select name="executionPolicy" size="1">
+		  <% executionPolicies.each { executionPolicy -> %>
+           <option><%="${executionPolicy.toString()}" %></option>
 	      <%}%>
 		</select> </br> 
 		amount: <input type="text" name="cents"> 
