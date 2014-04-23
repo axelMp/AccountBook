@@ -33,12 +33,11 @@ class BudgetController {
 					array {
 						for(p in account.getPlannedTransactions()){
 							plannedTransaction narration: p.narration, executionPolicy:p.schedule.executionPolicy.toString(), creditor:p.creditor.name, debitor:p.debitor.name, startsOn:utilitiesService.encodeDate(p.schedule.period.startsOn), endsOn:utilitiesService.encodeDate(p.schedule.period.endsOn), cents:p.amount.cents,currency:p.amount.currency.toString()
+							}
 						}
 					}
 				}
 			}
-		}
-			
 		}
 		
 		def plan = ledger.getBudget().getPlannedTransactions();
