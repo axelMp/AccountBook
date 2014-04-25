@@ -1,10 +1,10 @@
 class LedgerFilters {
    def filters = {
-        ledgerCheck(controller: '*', action: '*') {
+	   loginCheck(controller: '*') {
            before = {
-              if (!controllerName.equals('ledger') &&!session.getAttribute('Ledger')) {
-                  redirect(url: "/ledger/")
-                  return true
+            if (controllerName != null && !controllerName.equals('ledger') && !actionName.equals('select') && !session.Ledger) {			  
+                  redirect(controller: 'ledger', action:'select')
+                  return false
                }
            }
        }
