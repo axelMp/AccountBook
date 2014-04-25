@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+	<head>
 	<g:javascript src="jquery-2.1.0.js" />
 	<g:javascript src="budgetPerAccount.js" />
 	<g:javascript src="utilities.js" />
@@ -21,6 +22,7 @@
 					});
 		}
 	</script>
+	</head>
 	<body onLoad="onLoad()">
 	<g:render template="accountSelectionTemplate" model="[accounts: accounts,selectedAccount: selectedAccount]" />
 	<ul>
