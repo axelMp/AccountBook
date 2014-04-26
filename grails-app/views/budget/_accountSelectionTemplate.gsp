@@ -9,7 +9,7 @@ function selectAccount(select,url) {
 </script>
 
 <form action="" >
-	view budget for account: <select name="selected" size="1" onchange="selectAccount(this,'<g:createLink action="index"/>')">
+	view budget for account: <select name="selected" size="1" onchange="selectAccount(this,'<g:createLink controller="Budget" action="index"/>')">
 		<option></option>
 		<% accounts.each { account -> %>
 			<option<g:if test="${null != selectedAccount && account.name == selectedAccount.name}"><%=" selected"%></g:if><g:else><%=""%></g:else>
