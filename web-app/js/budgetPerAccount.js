@@ -1,33 +1,87 @@
-function visualizeAsTextField(nameOfField, text) {
-   return "<input type=\"text\" name=\""+nameOfField+"\" value=\""+text+"\">";
+function updatePlannedTransaction(id,attribute,value) {
+	//console.log("updating attribute "+attribute+" to "+ value+" for id "+id); 
+	var data = {};
+	data.id = id;
+	data[attribute] = value;
+	$.ajax( {
+		url: i,
+		type: 'PUT',
+		data: JSON.stringify(data),
+		dataType: 'json'
+	});
 }
 
-function visualizeDate(name,dateD) {
-	return "<input type=\"text\" name=\""+name+"\" value=\""+dateD+"\">";
+
+function updatePlannedTransactionTextField(i,inputNode) {
+	updatePlannedTransaction(i,inputNode.name,inputNode.value);
 }
 
-function visualizeScheduleForEditing(aPlannedTransaction) {
-	return "from "+visualizeDate("startsOn",aPlannedTransaction.startsOn) + " until " + visualizeDate("endsOn",aPlannedTransaction.endsOn) + " with policy "+aPlannedTransaction.executionPolicy;
+
+function updatePlannedTransactionDropDown(i,select) {
+	var selectedValue = select.options[select.options.selectedIndex].value;
+	updatePlannedTransaction(i,select.name,selectedValue);
+}
+
+
+function visualizeAsTextField(nameOfField, text,id) {
+   return "<input type=\"text\" onChange=\"updatePlannedTransactionTextField("+id+",this)\" name=\""+nameOfField+"\" value=\""+text+"\" size=\"10\">";
+}
+
+
+function visualizeAsDropDown(nameOfField,text,id,validValues) {
+	var header = "<select name=\""+nameOfField+"\" onchange=\"updatePlannedTransactionDropDown("+id+",this)\" size=\"1\">";
+	var options = "";
+	for(i=0,x=validValues.length;i<x;i++){
+		var optionName = validValues[i];
+		options = options + "<option value=\""+optionName+"\"";
+		if ( optionName == text ) {
+			options = options + " selected=\"selected\"";
+		}
+		options = options + ">"+optionName+"</option>";
+	}
+	var footer = "</select>";
+	return header + options + footer;
+}
+
+function visualizeScheduleForEditing(aPlannedTransaction,policies) {
+	return "from "+visualizeAsTextField("startsOn",aPlannedTransaction.startsOn,aPlannedTransaction.id) + " until " + visualizeAsTextField("endsOn",aPlannedTransaction.endsOn,aPlannedTransaction.id) + " with policy "+visualizeAsDropDown("executionPolicy",aPlannedTransaction.executionPolicy,aPlannedTransaction.id,policies);
 }
 
 function visualizeAmountForEditing(aPlannedTransaction) {
-	var amount = visualizeAsTextField("cents",aPlannedTransaction.cents/100.0);
+	var amount = visualizeAsTextField("cents",aPlannedTransaction.cents/100.0,aPlannedTransaction.id);
 	if ( aPlannedTransaction.currency == "EUR" ) {
 		amount = amount + "€";
 	}
 	return amount;
 }
 
-function visualizeForEditing(aPlannedTransaction) {
+function visualizeForEditing(aPlannedTransaction,policies) {
 	var WHITESPACE = "&nbsp;"
-	var title = visualizeAsTextField("title",aPlannedTransaction.narration);
+	var title = visualizeAsTextField("narration",aPlannedTransaction.narration,aPlannedTransaction.id);
 	var amount = visualizeAmountForEditing(aPlannedTransaction);
-	var schedule = visualizeScheduleForEditing(aPlannedTransaction);
+	var schedule = visualizeScheduleForEditing(aPlannedTransaction,policies);
 	return "<form>"+title + WHITESPACE + amount + WHITESPACE + schedule+"</form>";
+}
+
+function getAvailableExecutionPolicies() {
+	var response = $.ajax({
+        type: "GET",
+        url: "listExecutionPolicies",
+        async: false
+    }).responseText;
+	
+	return response;
 }
 
 function distributeJSon(data,selectedAccountEncoded) {
 	var selectedAccount = replaceHtmlUmlaute(selectedAccountEncoded);
+	var policies = new Array();
+	var availablePolicies = JSON.parse(getAvailableExecutionPolicies());
+	for(i=0,x=availablePolicies.length;i<x;i++){
+		var aString = availablePolicies[i].executionPolicy;
+		policies.push(aString);
+	}
+	
 	// sort transactions according to in which account they'll be displayed
 	var myMap = new Map();
 	for (item of data) {
@@ -47,7 +101,7 @@ function distributeJSon(data,selectedAccountEncoded) {
 			$(this).children().append(function(index,html) {
 				var encodedTransactions = "";
 				myMap.get(title).forEach( function(element, index, array) {
-					encodedTransactions = encodedTransactions + "<li>"+visualizeForEditing(element)+"</li>"
+					encodedTransactions = encodedTransactions + "<li>"+visualizeForEditing(element,policies)+"</li>"
 				})
 				return encodedTransactions;
 			});

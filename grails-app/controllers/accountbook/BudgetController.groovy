@@ -3,16 +3,65 @@ package accountbook
 import java.util.Date;
 
 import org.codehaus.groovy.grails.web.json.*;
-
-import static org.springframework.http.HttpStatus.*
-import static org.springframework.http.HttpMethod.*
+import grails.rest.*
 
 import org.book.account.domain.*
 
+@Resource(uri='/budget')
 class BudgetController {
 	def ledgerService;
 	def accountService;
 	def utilitiesService;
+
+	
+	def update() {
+		def id = request.JSON.id.toString();
+		def ledger = ledgerService.retrieve(session["Ledger"]);
+		for( aPlannedTransaction in ledger.budget.getPlannedTransactions() ) { 
+			if ( aPlannedTransaction.id.toString().equals(id) ) {
+				
+				if (request.JSON.narration) {
+					aPlannedTransaction.narration = request.JSON.narration;
+				}
+				
+				if (request.JSON.startsOn) {
+					Period newPeriod = new Period(utilitiesService.parseDate(request.JSON.startsOn),aPlannedTransaction.schedule.period.endsOn);
+					aPlannedTransaction.schedule = new Schedule(newPeriod,aPlannedTransaction.schedule.executionPolicy);
+				}
+				
+				if (request.JSON.endsOn) {
+					Period newPeriod = new Period(aPlannedTransaction.schedule.period.endsOn,utilitiesService.parseDate(request.JSON.endsOn));
+					aPlannedTransaction.schedule = new Schedule(newPeriod,aPlannedTransaction.schedule.executionPolicy);
+				}
+				
+				if (request.JSON.executionPolicy) {
+					aPlannedTransaction.schedule = new Schedule(aPlannedTransaction.schedule.period,ExecutionPolicy.valueOf(request.JSON.executionPolicy));
+				}
+				
+				if (request.JSON.cents) {
+					int cents = Math.round(100*Float.parseFloat(request.JSON.cents));
+					aPlannedTransaction.amount = new Amount(cents,aPlannedTransaction.amount.currency);
+				}
+				
+				aPlannedTransaction.save(true);
+				respond status: 204;
+				return;
+			}
+		}
+		respond status: 404
+	}
+	
+	
+    def listExecutionPolicies() {
+		render(contentType: "text/json") {
+			array {
+				for(p in ExecutionPolicy.values()){
+					policy executionPolicy: p.toString()
+				}
+			}
+		}	
+	}
+	
 	
     def index() {
 		def ledger = ledgerService.retrieve(session["Ledger"]);
@@ -24,15 +73,13 @@ class BudgetController {
 			
 			withFormat {
 			html {
-				log.info('return planned transactions for account '+name+' as html');
 				render(view:'forSingleAccount', model:[selectedAccount:account,accounts:accountService.list(ledger)]);
 			}
 			json {
-				log.info('return planned transactions for account '+name+' as json');
 				render(contentType: "text/json") {
 					array {
 						for(p in account.getPlannedTransactions()){
-							plannedTransaction narration: p.narration, executionPolicy:p.schedule.executionPolicy.toString(), creditor:p.creditor.name, debitor:p.debitor.name, startsOn:utilitiesService.encodeDate(p.schedule.period.startsOn), endsOn:utilitiesService.encodeDate(p.schedule.period.endsOn), cents:p.amount.cents,currency:p.amount.currency.toString()
+							plannedTransaction narration: p.narration, executionPolicy:p.schedule.executionPolicy.toString(), creditor:p.creditor.name, debitor:p.debitor.name, startsOn:utilitiesService.encodeDate(p.schedule.period.startsOn), endsOn:utilitiesService.encodeDate(p.schedule.period.endsOn), cents:p.amount.cents,id:p.id, currency:p.amount.currency.toString()
 							}
 						}
 					}
@@ -50,7 +97,7 @@ class BudgetController {
 				render(contentType: "text/json") {
 					array {
 						for(p in plan){
-							plannedTransaction narration: p.narration, executionPolicy:p.schedule.executionPolicy.toString(), creditor:p.creditor.name, debitor:p.debitor.name, startsOn:utilitiesService.encodeDate(p.schedule.period.startsOn), endsOn:utilitiesService.encodeDate(p.schedule.period.endsOn), cents:p.amount.cents,currency:p.amount.currency.toString()
+							plannedTransaction narration: p.narration, executionPolicy:p.schedule.executionPolicy.toString(), creditor:p.creditor.name, debitor:p.debitor.name, startsOn:utilitiesService.encodeDate(p.schedule.period.startsOn), endsOn:utilitiesService.encodeDate(p.schedule.period.endsOn), id:p.id , cents:p.amount.cents,currency:p.amount.currency.toString()
 						}
 					}
 				}
