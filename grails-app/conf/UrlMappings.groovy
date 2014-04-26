@@ -7,6 +7,9 @@ class UrlMappings {
             }
         }
 
+		"/budget"(resources:'budget')
+		
+		"/executionPolicy"(controller:'budget',action:'listExecutionPolicies')
         "/"(view:"/index")
         "500"(view:'/error')
 	}
