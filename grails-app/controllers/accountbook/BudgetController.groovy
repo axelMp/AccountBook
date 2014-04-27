@@ -1,6 +1,7 @@
 package accountbook
 
 import java.util.Date;
+import java.util.Calendar;
 
 import org.codehaus.groovy.grails.web.json.*;
 import grails.rest.*
@@ -13,6 +14,36 @@ class BudgetController {
 	def accountService;
 	def utilitiesService;
 
+
+	def forecastClosure() {
+		def ledger = ledgerService.retrieve(session["Ledger"]);
+		def account = accountService.retrieve(ledger,utilitiesService.replaceHtmlEncodings(params.account));
+		def relativeTo = accountService.retrieve(ledger,utilitiesService.replaceHtmlEncodings(params.relativeTo));
+		
+		Map<Integer,Amount> amounts = new HashMap<Integer,Amount>();
+		
+		Calendar aCalendar = Calendar.getInstance();
+		aCalendar.set(Calendar.HOUR,23);
+		aCalendar.set(Calendar.MINUTE,59);
+		aCalendar.set(Calendar.SECOND,59);
+		
+ 		for(int i = 0 ; i < 12 ; ++i ) {
+			aCalendar.set(Calendar.DAY_OF_MONTH,1);
+			aCalendar.set(Calendar.MONTH,i);
+			aCalendar.set(Calendar.DAY_OF_MONTH,aCalendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+			Date forecastDate = aCalendar.getTime();
+			amounts.put(i,ledger.budget.forecast(account,relativeTo,forecastDate,new MatchingPolicy()));
+			
+		}
+		
+		render(contentType: "text/json") {
+			array {
+				for(p in amounts.entrySet()){
+					forecastClosure month: p.key, cents:p.value.cents , currency:p.value.currency.toString()
+				}
+			}
+		}
+	}
 	
 	def update() {
 		def id = request.JSON.id.toString();

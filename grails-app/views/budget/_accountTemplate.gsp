@@ -1,1 +1,2 @@
-<li title="<%="${account.name}"%>"><%="${account.name}"%><ul></ul>
+<li title="<%="${account.name}"%>"><div><%="${account.name}"%></div> <div id="JAN"></div> <div id="FEB"></div> <div id="MAR"></div> <div id="APR"></div> <div id="MAY"></div> <div id="JUN"></div> <div id="JUL"></div> <div id="AUG"></div> <div id="SEP"></div> <div id="OCT"></div> <div id="NOV"></div> <div id="DEC"></div>
+<ul></ul>

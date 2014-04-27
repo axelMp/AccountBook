@@ -9,17 +9,26 @@
 			$("form:first-of-type select option").each( replaceHtmlUmlauteInOption );
 		}
 		
-		function onLoad() {
-			fixCharactersInAccountSelection();
-			// just append your onLoad function here
-			
-			var accountName = "<%="$selectedAccount.name"%>";
+		function fillWithPlannedTransactions() {
 			$.ajax( {
 					url: "index", 
 					data: {"selected": "<%="$selectedAccount.name"%>","format":"json"} , 
 					success: function(data){distributeJSon(data,"<%="$selectedAccount.name"%>")},
 					datatype: "json"
 					});
+		}
+		
+		function fillEachAccountWithSummary() {
+			var accountName = "<%="$selectedAccount.name"%>";
+			$("ul li ul li" ).each(function() {
+				fillAccountWithForecast(this,accountName);
+			});
+		}
+		
+		function onLoad() {
+			fixCharactersInAccountSelection();
+			fillWithPlannedTransactions();
+			fillEachAccountWithSummary();
 		}
 	</script>
 	</head>
